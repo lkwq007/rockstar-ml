@@ -35,10 +35,10 @@ let blankline="\r\n\r\n"|"\r\r"|"\n\n"
 let pronoun="it"|"he"|"she"|"him"|"her"
   |"they"|"them"|"ze"|"hir"|"zie"|"zir"
   |"xe"|"xem"|"ve"|"ver"
-let article="a"|"an"|"the"|"my"|"your"
-let upper_article="A"|"An"|"The"|"My"|"Your"
+let article="a"|"an"|"the"|"my"|"your"|"A"|"An"|"The"|"My"|"Your"
+let captical_article="A"|"An"|"The"|"My"|"Your"
 let captical=['A'-'Z'] ['A'-'Z' 'a'-'z']*
-let id=(article whitespace ['a'-'z']+)| (captical ([' ' '\t']+ captical)*)
+let id=(article whitespace ['a'-'z']+)
 
 let bool_true="true"|"right"|"yes"|"ok"
 let bool_false="false"|"wrong"|"no"|"lies"
@@ -54,18 +54,7 @@ rule read=
   | newline { incr_linenum lexbuf; state:=NEWLINE; read_newline lexbuf }
   | '"' { state:=STR; read_string (Buffer.create 16) lexbuf }
   | "mysterious" { Parser.UNDEFINED }
-  | null { Parser.NULL }
-  | int { Parser.NUM (float_of_string (lexeme lexbuf)) }
-  | float { Parser.NUM (float_of_string (lexeme lexbuf)) }
-  | bool_true { Parser.TRUE }
-  | bool_false { Parser.FALSE }
-  | gt { Parser.GT }
-  | lt { Parser.LT }
-  | ge { Parser.GE }
-  | le { Parser.LE }
-  | ((is whitespace "not")|"aint") whitespace { state:=IS; Parser.ISNOT }
-  | is whitespace { state:=IS; Parser.IS }
-  | "says " { state:=PSTRING; read_pstring (Buffer.create 16) lexbuf }
+  | "says " { state:=PSTRING; Parser.IS }
   | "Put" { Parser.PUT }
   | "into" { Parser.INTO }
   | "Build" { Parser.BUILD }
@@ -90,10 +79,40 @@ rule read=
   | "and" { Parser.AND }
   | "taking" { Parser.TAKING }
   | ',' { Parser.COMMA }
+  | null { Parser.NULL }
+  | int { Parser.NUM (float_of_string (lexeme lexbuf)) }
+  | float { Parser.NUM (float_of_string (lexeme lexbuf)) }
+  | bool_true { Parser.TRUE }
+  | bool_false { Parser.FALSE }
+  | gt { Parser.GT }
+  | lt { Parser.LT }
+  | ge { Parser.GE }
+  | le { Parser.LE }
+  | ((is whitespace "not")|"aint") whitespace { state:=IS; Parser.ISNOT }
+  | is whitespace { state:=IS; Parser.IS }
   | pronoun {  try Parser.VARIABLE(List.hd !env) with (Failure hd) -> raise (SyntaxError ((lexeme lexbuf)^" refers to nothing")) }
   | id { env:=(lexeme lexbuf)::!env; (Parser.VARIABLE (lexeme lexbuf)) }
+  | captical { print_endline (lexeme lexbuf); let buf=Buffer.create 32 in let ()=Buffer.add_string buf (lexeme lexbuf) in read_var buf lexbuf }
   | _ { raise (SyntaxError ("Unexpected character:"^(lexeme lexbuf))) }
   | eof { state:=CODE; Parser.EOF }
+and read_var buf=
+  parse
+  | newline { incr_linenum lexbuf; state:=NEWLINE; Parser.VARIABLE (Buffer.contents buf) }
+  | "Put" { Parser.PUT }
+  | "Build" { Parser.BUILD }
+  | "Knock" { Parser.KNOCK }
+  | "Listen" { Parser.LISTEN }
+  | "Say"|"Shout"|"Whisper"|"Scream" { Parser.PRINT }
+  | "If" { Parser.IF }
+  | "Else" { Parser.ELSE }
+  | "While" { Parser.WHILE }
+  | "Until" { Parser.UNTIL }
+  | "Break"|"Break" whitespace "it" whitespace "down" { Parser.BREAK }
+  | "Continue"|"Take" whitespace "it" whitespace "to" whitespace "the" whitespace "top" { Parser.CONTINUE }
+  | "Give" whitespace "back" { Parser.RETURN }
+  | whitespace { read_var buf lexbuf }
+  | captical { print_endline (lexeme lexbuf); Buffer.add_char buf ' ';Buffer.add_string buf (lexeme lexbuf) ; read_var buf lexbuf }
+  | "" { Parser.VARIABLE (Buffer.contents buf) }
 and read_is=
   parse
   | "true" { state:=CODE; Parser.TRUE }
