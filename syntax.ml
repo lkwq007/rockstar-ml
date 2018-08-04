@@ -64,15 +64,15 @@ let print seg_list=
     | [] -> ()
     | hd::tl -> print_string (hd^" "); print_args tl
   in let string_of_val=function
-    | Undefined -> "Undefined"
-    | Null -> "Null"
-    | Boolean bool -> if bool=True then "True" else "False"
-    | Number f -> string_of_float f
-    | String x -> "\""^x^"\""
-    | _ -> "<object>"
+      | Undefined -> "Undefined"
+      | Null -> "Null"
+      | Boolean bool -> if bool=True then "True" else "False"
+      | Number f -> string_of_float f
+      | String x -> "\""^x^"\""
+      | _ -> "<object>"
   in let rec print_param=function
-    | [] -> ()
-    | hd::tl -> print_exp hd; print_string ","; print_param tl
+      | [] -> ()
+      | hd::tl -> print_exp hd; print_string ","; print_param tl
   and print_exp=function
     | Variable x -> print_string ("(Var: "^x^")")
     | Value x -> print_string ("(Val: "^(string_of_val x)^")")
@@ -82,46 +82,46 @@ let print seg_list=
     | Divide (e1,e2) -> print_string "("; print_exp e1; print_string "/"; print_exp e2; print_string ")"
     | Call (f,param) -> print_string ("(Call "^f^":[");print_param param; print_string "])"
   in let print_cond=function
-    | Eq (e1,e2) -> print_string "(";print_exp e1; print_string "="; print_exp e2; print_string ")"
-    | Ne (e1,e2) -> print_string "(";print_exp e1; print_string "!="; print_exp e2; print_string ")"
-    | Gt (e1,e2) -> print_string "(";print_exp e1; print_string ">"; print_exp e2; print_string ")"
-    | Lt (e1,e2) -> print_string "(";print_exp e1; print_string "<"; print_exp e2; print_string ")"
-    | Ge (e1,e2) -> print_string "(";print_exp e1; print_string ">="; print_exp e2; print_string ")"
-    | Le (e1,e2) -> print_string "(";print_exp e1; print_string "<="; print_exp e2; print_string ")"
+      | Eq (e1,e2) -> print_string "(";print_exp e1; print_string "="; print_exp e2; print_string ")"
+      | Ne (e1,e2) -> print_string "(";print_exp e1; print_string "!="; print_exp e2; print_string ")"
+      | Gt (e1,e2) -> print_string "(";print_exp e1; print_string ">"; print_exp e2; print_string ")"
+      | Lt (e1,e2) -> print_string "(";print_exp e1; print_string "<"; print_exp e2; print_string ")"
+      | Ge (e1,e2) -> print_string "(";print_exp e1; print_string ">="; print_exp e2; print_string ")"
+      | Le (e1,e2) -> print_string "(";print_exp e1; print_string "<="; print_exp e2; print_string ")"
   in let count=ref 0
   in let rec indent n=
-    if n>0 then (print_char ' '; indent (n-1)) else ()
+       if n>0 then (print_char ' '; indent (n-1)) else ()
   in let print_stm=function
-    | Nop -> print_string "Nop"
-    | Expression e -> print_exp e
-    | Definition (s,v) -> print_string ("Define: ("^s^","^(string_of_val v)^")")
-    | Assign (s,e) -> print_string (s^"="); print_exp e
-    | Scan s -> print_string ("Scan to: "^s)
-    | Print e -> print_string "Print: "; print_exp e
-    | Break -> print_string "Break"
-    | Continue -> print_string "Continue"
-    | Return e -> print_string "Return: "; print_exp e
-    | Inc s -> print_string ("Inc: "^s)
-    | Dec s -> print_string ("Dec: "^s)
+      | Nop -> print_string "Nop"
+      | Expression e -> print_exp e
+      | Definition (s,v) -> print_string ("Define: (Var: "^s^","^(string_of_val v)^")")
+      | Assign (s,e) -> print_string (s^"="); print_exp e
+      | Scan s -> print_string ("Scan to: "^s)
+      | Print e -> print_string "Print: "; print_exp e
+      | Break -> print_string "Break"
+      | Continue -> print_string "Continue"
+      | Return e -> print_string "Return: "; print_exp e
+      | Inc s -> print_string ("Inc: "^s)
+      | Dec s -> print_string ("Dec: "^s)
   in let print_stms lst=
-    let rec aux_stm=function
-    | [] -> ()
-    | hd::tl -> indent !count; print_stm hd; print_newline ();aux_stm tl
-    in aux_stm lst
+       let rec aux_stm=function
+         | [] -> ()
+         | hd::tl -> indent !count; print_stm hd; print_newline ();aux_stm tl
+       in aux_stm lst
   in let rec print_block=function
-    | If (cond,b1,b2) -> indent !count; print_string "IF("; print_cond cond; print_endline ")"; print_blocks b1; print_blocks b2
-    | While (cond,b) -> indent !count; print_string "WHILE("; print_cond cond; print_endline ")"; print_blocks b
-    | Until (cond,b) -> indent !count; print_string "UNTIL("; print_cond cond; print_endline ")"; print_blocks b
-    | Stm lst -> print_stms lst
+      | If (cond,b1,b2) -> indent !count; print_string "IF("; print_cond cond; print_endline ")"; print_blocks b1; print_blocks b2
+      | While (cond,b) -> indent !count; print_string "WHILE("; print_cond cond; print_endline ")"; print_blocks b
+      | Until (cond,b) -> indent !count; print_string "UNTIL("; print_cond cond; print_endline ")"; print_blocks b
+      | Stm lst -> print_stms lst
   and print_blocks b=
     let aux=function
-    | [] -> ()
-    | hd::tl -> print_block hd; print_blocks tl
-    in indent !count; print_endline "{"; count:=!count+2; aux b; count:=!count-2; indent !count; print_endline "}"
+      | [] -> ()
+      | hd::tl -> print_block hd; print_blocks tl
+    in if b!=[] then begin indent !count; print_endline "{"; count:=!count+2 end; aux b; if b!=[] then begin count:=!count-2; indent !count; print_endline "}" end
   in let print_seg=function
-    | Func (f,args,b) -> print_string (f^"("); print_args args; print_endline ")"; print_blocks b 
-    | Block b -> print_blocks b
+      | Func (f,args,b) -> print_string (f^"("); print_args args; print_endline ")"; print_blocks b 
+      | Block b -> print_blocks b
   in let rec aux_seg=function
-    | [] -> ()
-    | hd::tl -> print_seg hd; aux_seg tl
+      | [] -> ()
+      | hd::tl -> print_seg hd; aux_seg tl
   in aux_seg seg_list
