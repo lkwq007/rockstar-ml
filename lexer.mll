@@ -92,7 +92,7 @@ rule read=
   | is whitespace { state:=IS; Parser.IS }
   | pronoun {  try Parser.VARIABLE(List.hd !env) with (Failure hd) -> raise (SyntaxError ((lexeme lexbuf)^" refers to nothing")) }
   | id { env:=(lexeme lexbuf)::!env; (Parser.VARIABLE (lexeme lexbuf)) }
-  | captical { print_endline (lexeme lexbuf); let buf=Buffer.create 32 in let ()=Buffer.add_string buf (lexeme lexbuf) in read_var buf lexbuf }
+  | captical { let buf=Buffer.create 32 in let ()=Buffer.add_string buf (lexeme lexbuf) in read_var buf lexbuf }
   | _ { raise (SyntaxError ("Unexpected character:"^(lexeme lexbuf))) }
   | eof { state:=CODE; Parser.EOF }
 and read_var buf=
@@ -111,7 +111,7 @@ and read_var buf=
   | "Continue"|"Take" whitespace "it" whitespace "to" whitespace "the" whitespace "top" { Parser.CONTINUE }
   | "Give" whitespace "back" { Parser.RETURN }
   | whitespace { read_var buf lexbuf }
-  | captical { print_endline (lexeme lexbuf); Buffer.add_char buf ' ';Buffer.add_string buf (lexeme lexbuf) ; read_var buf lexbuf }
+  | captical { Buffer.add_char buf ' ';Buffer.add_string buf (lexeme lexbuf) ; read_var buf lexbuf }
   | "" { Parser.VARIABLE (Buffer.contents buf) }
 and read_is=
   parse
