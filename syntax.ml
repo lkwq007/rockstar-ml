@@ -117,7 +117,7 @@ let print seg_list=
     let aux=function
     | [] -> ()
     | hd::tl -> print_block hd; print_blocks tl
-    in print_endline "{"; count:=!count+2; aux b; count:=!count-2; print_endline "}"
+    in indent !count; print_endline "{"; count:=!count+2; aux b; count:=!count-2; indent !count; print_endline "}"
   in let print_seg=function
     | Func (f,args,b) -> print_string (f^"("); print_args args; print_endline ")"; print_blocks b 
     | Block b -> print_blocks b
