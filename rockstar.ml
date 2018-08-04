@@ -44,12 +44,14 @@ let main =
     let speclist = [("-stdin", Arg.Set from_stdin, "Read script from standard input");
                     ("-ast", Arg.Set show_ast, "Print the ast rather than eval the script");
                    ]
-    in let usage_msg = "rockstar-ml is a Rockstar interrupter implemented in OCaml"
+    in let usage_msg = "rockstar-ml is a Rockstar interpreter implemented in OCaml"
     in Arg.parse speclist process_file usage_msg;
+    if !from_stdin then begin 
     let lexbuf_=(Lexing.from_channel stdin)
     in let lexbuf=(Lexing.from_string (Preprocessor.preprocess lexbuf_ (Buffer.create 1024)))
     in let ()=lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = "stdin" }
-    in if !from_stdin then begin if !show_ast then print (parse_with_error lexbuf) else eval_with_error (parse_with_error lexbuf) end
+    in if !show_ast then print (parse_with_error lexbuf) else eval_with_error (parse_with_error lexbuf) 
+    end
     else if not !anno_arg then Arg.usage speclist usage_msg
   end
 
