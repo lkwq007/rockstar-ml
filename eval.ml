@@ -22,8 +22,8 @@ let eval prog=
     | (_,_) -> raise (SemanticError "Arthimetic op with other types")
   in
   let is_lt v1 v2=is_gt v2 v1 in
-  let is_ge v1 v2=(is_gt v1 v2)&&(is_equal v1 v2) in
-  let is_le v1 v2=(is_lt v1 v2)&&(is_equal v1 v2) in
+  let is_ge v1 v2=(is_gt v1 v2)||(is_equal v1 v2) in
+  let is_le v1 v2=(is_lt v1 v2)||(is_equal v1 v2) in
   let print=function
     | Undefined -> print_string "Undefined"
     | Null -> print_string "Null"

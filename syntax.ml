@@ -64,7 +64,7 @@ type segment=
 let print seg_list=
   let rec print_args=function
     | [] -> ()
-    | hd::tl -> print_string (hd^" "); print_args tl
+    | hd::tl -> print_string (hd^", "); print_args tl
   in let string_of_val=function
       | Undefined -> "Undefined"
       | Null -> "Null"
