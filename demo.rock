@@ -1,6 +1,6 @@
-Midnight takes your heart and your soul
-While your heart is as high as your soul
-Put your heart without your soul into your heart
+Midnight takes your heart and your soul (function)
+While your heart is as high as your soul (loop, comparison, conditional)
+Put your heart without your soul into your heart (assign, arithmetic)
 
 Give back your heart
 
@@ -12,15 +12,55 @@ Hate is water
 Until my world is Desire
 Build my world up
 If Midnight taking my world, Fire is nothing and Midnight taking my world, Hate is nothing
-Shout "FizzBuzz!"
-Take it to the top
+Shout "FizzBuzz!" (output)
+Take it to the top (break)
 
-If Midnight taking my world, Fire is nothing
+If Midnight taking my world, Fire is nothing (if, comparison, conditional, function)
 Shout "Fizz!"
 Take it to the top
 
 If Midnight taking my world, Hate is nothing
-Say "Buzz!"
+Say "Buzz!" (test comment)
 Take it to the top
 
 Whisper my world
+
+Listen to my words (input)
+Put my words into your soul
+Say your soul
+
+Nothing is true
+Everything is premitted
+Octocat says nothing
+Say Octocat
+Octocat is nobody
+Say Octocat
+Octocat is true
+Say Octocat
+
+C is a
+If C is greater than 1
+Say C
+
+Else
+Build C up
+Say C
+
+While C is lower than 100
+Build C up
+Say C
+If C is greater than 5
+Break it down
+
+Else
+While C is lower than 5
+If Octocat is true and true ain't t'r'u'e'''''''''''''''''
+Say "Nyan"
+
+Build C up
+
+
+Say C
+
+D
+Say it

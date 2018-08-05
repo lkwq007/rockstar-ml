@@ -65,9 +65,9 @@ Options are:
 Here's the content of `demo.rock`, which is taken from the official spec. 
 
 ```
-Midnight takes your heart and your soul
-While your heart is as high as your soul
-Put your heart without your soul into your heart
+Midnight takes your heart and your soul (function)
+While your heart is as high as your soul (loop, comparison, conditional)
+Put your heart without your soul into your heart (assign, arithmetic)
 
 Give back your heart
 
@@ -76,21 +76,61 @@ Desire is a lovestruck ladykiller
 My world is nothing 
 Fire is ice
 Hate is water
-Until my world is Desire,
+Until my world is Desire
 Build my world up
 If Midnight taking my world, Fire is nothing and Midnight taking my world, Hate is nothing
-Shout "FizzBuzz!"
-Take it to the top
+Shout "FizzBuzz!" (output)
+Take it to the top (break)
 
-If Midnight taking my world, Fire is nothing
+If Midnight taking my world, Fire is nothing (if, comparison, conditional, function)
 Shout "Fizz!"
 Take it to the top
 
 If Midnight taking my world, Hate is nothing
-Say "Buzz!"
+Say "Buzz!" (test comment)
 Take it to the top
 
 Whisper my world
+
+Listen to my words (input)
+Put my words into your soul
+Say your soul
+
+Nothing is true
+Everything is premitted
+Octocat says nothing
+Say Octocat
+Octocat is nobody
+Say Octocat
+Octocat is true
+Say Octocat
+
+C is a
+If C is greater than 1
+Say C
+
+Else
+Build C up
+Say C
+
+While C is lower than 100
+Build C up
+Say C
+If C is greater than 5
+Break it down
+
+Else
+While C is lower than 5
+If Octocat is true and true ain't t'r'u'e'''''''''''''''''
+Say "Nyan"
+
+Build C up
+
+
+Say C
+
+D
+Say it
 ```
 
 Result is shown below.
@@ -142,10 +182,58 @@ UNTIL(((Var: my world)=(Var: Desire)))
   }
   Print: (Var: my world)
 }
+Scan to: my words
+your soul=(Var: my words)
+Print: (Var: your soul)
+Define: (Var: Nothing,True)
+Define: (Var: Everything,9.)
+Define: (Var: Octocat,"nothing")
+Print: (Var: Octocat)
+Define: (Var: Octocat,Null)
+Print: (Var: Octocat)
+Define: (Var: Octocat,True)
+Print: (Var: Octocat)
+Define: (Var: C,1.)
+IF(((Var: C)>(Val: 1.)))
+{
+  Print: (Var: C)
+}
+ELSE
+{
+  Inc: C
+  Print: (Var: C)
+}
+WHILE(((Var: C)<(Val: 100.)))
+{
+  Inc: C
+  Print: (Var: C)
+  IF(((Var: C)>(Val: 5.)))
+  {
+    Break
+  }
+  ELSE
+  {
+    WHILE(((Var: C)<(Val: 5.)))
+    {
+      IF((((Var: Octocat)=(Val: True))&&((Val: True)!=(Val: True))))
+      {
+        Print: (Val: "Nyan")
+      }
+      ELSE
+      {
+        Nop
+      }
+      Inc: C
+    }
+  }
+  Print: (Var: C)
+}
+(Var: D)
+Print: (Var: D)
 ```
 
 The output of script:
 ```
-# ./rockstar.native demo.rock
-1.2.3.4.5.6.7.8.9.10.11.12.13.14.15.16.17.18.19.20.21.22.23.24.25.26.27.28.29.30.31.32.33.34.35.36.37.38.39.40.41.42.43.44.45.46.47.48.49.50.51.52.53.54.55.56.57.58.59.60.61.62.63.64.65.66.67.68.69.70.71.72.73.74.75.76.77.78.79.80.81.82.83.84.85.86.87.88.89.90.91.92.93.94.95.96.97.98.99.100.
+# echo 65535 | ./rockstar.native demo.rock
+1.2.3.4.5.6.7.8.9.10.11.12.13.14.15.16.17.18.19.20.21.22.23.24.25.26.27.28.29.30.31.32.33.34.35.36.37.38.39.40.41.42.43.44.45.46.47.48.49.50.51.52.53.54.55.56.57.58.59.60.61.62.63.64.65.66.67.68.69.70.71.72.73.74.75.76.77.78.79.80.81.82.83.84.85.86.87.88.89.90.91.92.93.94.95.96.97.98.99.100.65535.nothingNullTrue2.3.5.6.Undefined
 ```
