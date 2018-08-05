@@ -51,6 +51,7 @@ let ge=is whitespace "as" whitespace ("high"|"great"|"big"|"strong") whitespace 
 let le=is whitespace "as" whitespace ("low"|"little"|"small"|"weak") whitespace "as"
 rule read=
   parse
+  | '(' { state:=COMMENT; read_comment lexbuf }
   | whitespace { read lexbuf }
   | newline { is_cond:=false; incr_linenum lexbuf; state:=NEWLINE; read_newline lexbuf }
   | '"' { state:=STR; read_string (Buffer.create 16) lexbuf }
@@ -70,7 +71,7 @@ rule read=
   | "to" { Parser.TO }
   | "Say"|"Shout"|"Whisper"|"Scream" { Parser.PRINT }
   | "If" { is_cond:=true; Parser.IF }
-  | "Else" { is_cond:=true; Parser.ELSE }
+  | "Else" { Parser.ELSE }
   | "While" { is_cond:=true; Parser.WHILE }
   | "Until" { is_cond:=true; Parser.UNTIL }
   | "Break"|"Break" whitespace "it" whitespace "down" { Parser.BREAK }
@@ -93,20 +94,20 @@ rule read=
   | ((is whitespace "not")|"aint") whitespace { (if not !is_cond then state:=IS); Parser.ISNOT }
   | is whitespace { (if not !is_cond then state:=IS); Parser.IS }
   | pronoun {  try Parser.VARIABLE(List.hd !env) with (Failure hd) -> raise (SyntaxError ((lexeme lexbuf)^" refers to nothing")) }
-  | id { env:=(lexeme lexbuf)::!env; (Parser.VARIABLE (String.lowercase (lexeme lexbuf))) }
+  | id { env:=(String.lowercase (lexeme lexbuf))::!env; (Parser.VARIABLE (String.lowercase (lexeme lexbuf))) }
   | captical { let buf=Buffer.create 32 in let ()=Buffer.add_string buf (lexeme lexbuf) in read_var buf lexbuf }
   | _ { raise (SyntaxError ("Unexpected character:"^(lexeme lexbuf))) }
   | eof { state:=CODE; Parser.EOF }
 and read_var buf=
   parse
-  | newline { is_cond:=false; incr_linenum lexbuf; state:=NEWLINE; Parser.VARIABLE (Buffer.contents buf) }
+  | newline { is_cond:=false; incr_linenum lexbuf; state:=NEWLINE; env:=(Buffer.contents buf)::!env; Parser.VARIABLE (Buffer.contents buf) }
   | "Put" { Parser.PUT }
   | "Build" { Parser.BUILD }
   | "Knock" { Parser.KNOCK }
   | "Listen" { Parser.LISTEN }
   | "Say"|"Shout"|"Whisper"|"Scream" { Parser.PRINT }
   | "If" { is_cond:=true; Parser.IF }
-  | "Else" { is_cond:=true; Parser.ELSE }
+  | "Else" { Parser.ELSE }
   | "While" { is_cond:=true; Parser.WHILE }
   | "Until" { is_cond:=true; Parser.UNTIL }
   | "Break"|"Break" whitespace "it" whitespace "down" { Parser.BREAK }
@@ -114,7 +115,7 @@ and read_var buf=
   | "Give" whitespace "back" { Parser.RETURN }
   | whitespace { read_var buf lexbuf }
   | captical { Buffer.add_char buf ' ';Buffer.add_string buf (lexeme lexbuf) ; read_var buf lexbuf }
-  | "" { Parser.VARIABLE (Buffer.contents buf) }
+  | "" { env:=(Buffer.contents buf)::!env; Parser.VARIABLE (Buffer.contents buf) }
 and read_is=
   parse
   | "true" { state:=CODE; Parser.TRUE }
