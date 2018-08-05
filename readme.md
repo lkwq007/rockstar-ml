@@ -6,7 +6,7 @@ rockstar-ml is a Rockstar interpreter implemented in OCaml
 
 I learned of the Rockstar programming language from the Hacker News several days ago. Since I wanna do some experiments with `ocamllex` and `menhir` , I decided to implement an interpreter for this literally interesting programming language. 
 
-It takes me about 8 hours to finish this project with OCaml ( Thanks to my prior knowledge of `lex` and `yacc` , I was able to learn how to use the `ocamllex` and `mehir` easily ). And with some conventions forgotten, there may be some minor bugs in the lexer and parser. Thereby, I really appreciate and welcome contributions that can help me fix those bugs. 
+It takes me about 8 hours to finish this project with OCaml ( Thanks to my prior knowledge of `lex` and `yacc` , I was able to learn how to use the `ocamllex` and `menhir` easily ). And with some conventions forgotten, there may be some minor bugs in the lexer and parser. Thereby, I really appreciate and welcome contributions that can help me fix these bugs. 
 
 ## Spec - Implementation
 
