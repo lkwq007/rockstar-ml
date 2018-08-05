@@ -20,6 +20,7 @@
     | PNUMBER
     | IS
   let state=ref CODE
+  let is_cond=ref false
 }
 
 let int = '-'? ['0'-'9'] ['0'-'9']*
@@ -51,7 +52,7 @@ let le=is whitespace "as" whitespace ("low"|"little"|"small"|"weak") whitespace 
 rule read=
   parse
   | whitespace { read lexbuf }
-  | newline { incr_linenum lexbuf; state:=NEWLINE; read_newline lexbuf }
+  | newline { is_cond:=false; incr_linenum lexbuf; state:=NEWLINE; read_newline lexbuf }
   | '"' { state:=STR; read_string (Buffer.create 16) lexbuf }
   | "mysterious" { Parser.UNDEFINED }
   | "says " { state:=PSTRING; Parser.IS }
@@ -68,10 +69,10 @@ rule read=
   | "Listen" { Parser.LISTEN }
   | "to" { Parser.TO }
   | "Say"|"Shout"|"Whisper"|"Scream" { Parser.PRINT }
-  | "If" { Parser.IF }
-  | "Else" { Parser.ELSE }
-  | "While" { Parser.WHILE }
-  | "Until" { Parser.UNTIL }
+  | "If" { is_cond:=true; Parser.IF }
+  | "Else" { is_cond:=true; Parser.ELSE }
+  | "While" { is_cond:=true; Parser.WHILE }
+  | "Until" { is_cond:=true; Parser.UNTIL }
   | "Break"|"Break" whitespace "it" whitespace "down" { Parser.BREAK }
   | "Continue"|"Take" whitespace "it" whitespace "to" whitespace "the" whitespace "top" { Parser.CONTINUE }
   | "takes" { Parser.TAKE }
@@ -88,25 +89,25 @@ rule read=
   | lt { Parser.LT }
   | ge { Parser.GE }
   | le { Parser.LE }
-  | ((is whitespace "not")|"aint") whitespace { state:=IS; Parser.ISNOT }
-  | is whitespace { state:=IS; Parser.IS }
+  | ((is whitespace "not")|"aint") whitespace { (if not !is_cond then state:=IS); Parser.ISNOT }
+  | is whitespace { (if not !is_cond then state:=IS); Parser.IS }
   | pronoun {  try Parser.VARIABLE(List.hd !env) with (Failure hd) -> raise (SyntaxError ((lexeme lexbuf)^" refers to nothing")) }
-  | id { env:=(lexeme lexbuf)::!env; (Parser.VARIABLE (lexeme lexbuf)) }
+  | id { env:=(lexeme lexbuf)::!env; (Parser.VARIABLE (String.lowercase (lexeme lexbuf))) }
   | captical { let buf=Buffer.create 32 in let ()=Buffer.add_string buf (lexeme lexbuf) in read_var buf lexbuf }
   | _ { raise (SyntaxError ("Unexpected character:"^(lexeme lexbuf))) }
   | eof { state:=CODE; Parser.EOF }
 and read_var buf=
   parse
-  | newline { incr_linenum lexbuf; state:=NEWLINE; Parser.VARIABLE (Buffer.contents buf) }
+  | newline { is_cond:=false; incr_linenum lexbuf; state:=NEWLINE; Parser.VARIABLE (Buffer.contents buf) }
   | "Put" { Parser.PUT }
   | "Build" { Parser.BUILD }
   | "Knock" { Parser.KNOCK }
   | "Listen" { Parser.LISTEN }
   | "Say"|"Shout"|"Whisper"|"Scream" { Parser.PRINT }
-  | "If" { Parser.IF }
-  | "Else" { Parser.ELSE }
-  | "While" { Parser.WHILE }
-  | "Until" { Parser.UNTIL }
+  | "If" { is_cond:=true; Parser.IF }
+  | "Else" { is_cond:=true; Parser.ELSE }
+  | "While" { is_cond:=true; Parser.WHILE }
+  | "Until" { is_cond:=true; Parser.UNTIL }
   | "Break"|"Break" whitespace "it" whitespace "down" { Parser.BREAK }
   | "Continue"|"Take" whitespace "it" whitespace "to" whitespace "the" whitespace "top" { Parser.CONTINUE }
   | "Give" whitespace "back" { Parser.RETURN }
@@ -120,7 +121,6 @@ and read_is=
   | "nothing"|"nowhere"|"nobody" { state:=CODE; Parser.NULL }
   | float { state:=CODE; Parser.NUM (float_of_string (lexeme lexbuf)) }
   | int { state:=CODE; Parser.NUM (float_of_string (lexeme lexbuf)) }
-  | id { env:=(lexeme lexbuf)::!env; (Parser.VARIABLE (lexeme lexbuf)) }
   | "" { state:=PNUMBER; read_number 0 false (Buffer.create 16) lexbuf }
   | eof { state:=CODE; raise (SyntaxError ("Is literal is not terminated")) }
 and read_number count period buf=
@@ -144,8 +144,8 @@ and read_comment=
   | eof { raise (SyntaxError ("Comment not terminated")) }
 and read_pstring buf=
   parse
-  | '\n' { state:=CODE; Parser.STRING (Buffer.contents buf) }
-  | [^'\n']+ { Buffer.add_string buf (lexeme lexbuf); read_pstring buf lexbuf }
+  | '\n'|"\r\n" { state:=CODE; Parser.STRING (Buffer.contents buf) }
+  | [^ '\n' '\r']+ { Buffer.add_string buf (lexeme lexbuf); read_pstring buf lexbuf }
   | eof { raise (SyntaxError ("Poetic String is not terminated")) }
 and read_string buf=
   parse

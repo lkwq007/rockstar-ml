@@ -56,14 +56,18 @@
 /* Grammar */
 
 prog:
-  | s=seg p=prog { s::p }
-  | s=seg blanklines EOF { [s] }
+  | blankline s=seg blankline p=prog { s::p }
+  | blankline s=seg blanklines EOF { [s] }
 ;
 
 seg:
   | f=VARIABLE TAKE arg=arguments b=block BLANKLINE { Func (f,arg,b) }
   | b=block { Block (b) }
 ;
+
+blankline:
+  | { Stm([Nop]) }
+  | blanklines { Stm([Nop]) }
 
 blanklines:
   | BLANKLINE blanklines { Stm([Nop]) }
