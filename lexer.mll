@@ -78,6 +78,7 @@ rule read=
   | "takes" { Parser.TAKE }
   | "Give" whitespace "back" { Parser.RETURN }
   | "and" { Parser.AND }
+  | "or" { Parser.OR }
   | "taking" { Parser.TAKING }
   | ',' { Parser.COMMA }
   | null { Parser.NULL }

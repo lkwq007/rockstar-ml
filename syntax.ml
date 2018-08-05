@@ -48,6 +48,8 @@ type condition=
   | Ge of expression*expression
   | Lt of expression*expression
   | Le of expression*expression
+  | And of condition*condition
+  | Or of condition*condition
 
 type block=
   | If of condition*(block list)*(block list)
@@ -81,13 +83,15 @@ let print seg_list=
     | Times (e1,e2) -> print_string "("; print_exp e1; print_string "*"; print_exp e2; print_string ")"
     | Divide (e1,e2) -> print_string "("; print_exp e1; print_string "/"; print_exp e2; print_string ")"
     | Call (f,param) -> print_string ("(Call "^f^":[");print_param param; print_string "])"
-  in let print_cond=function
+  in let rec print_cond=function
       | Eq (e1,e2) -> print_string "(";print_exp e1; print_string "="; print_exp e2; print_string ")"
       | Ne (e1,e2) -> print_string "(";print_exp e1; print_string "!="; print_exp e2; print_string ")"
       | Gt (e1,e2) -> print_string "(";print_exp e1; print_string ">"; print_exp e2; print_string ")"
       | Lt (e1,e2) -> print_string "(";print_exp e1; print_string "<"; print_exp e2; print_string ")"
       | Ge (e1,e2) -> print_string "(";print_exp e1; print_string ">="; print_exp e2; print_string ")"
       | Le (e1,e2) -> print_string "(";print_exp e1; print_string "<="; print_exp e2; print_string ")"
+      | And (c1,c2) -> print_string "(";print_cond c1; print_string "&&"; print_cond c2; print_string ")"
+      | Or (c1,c2) -> print_string "(";print_cond c1; print_string "||"; print_cond c2; print_string ")"
   in let count=ref 0
   in let rec indent n=
        if n>0 then (print_char ' '; indent (n-1)) else ()
@@ -109,18 +113,18 @@ let print seg_list=
          | hd::tl -> indent !count; print_stm hd; print_newline ();aux_stm tl
        in aux_stm lst
   in let rec print_block=function
-      | If (cond,b1,b2) -> indent !count; print_string "IF("; print_cond cond; print_endline ")"; print_blocks b1; print_blocks b2
-      | While (cond,b) -> indent !count; print_string "WHILE("; print_cond cond; print_endline ")"; print_blocks b
-      | Until (cond,b) -> indent !count; print_string "UNTIL("; print_cond cond; print_endline ")"; print_blocks b
+      | If (cond,b1,b2) -> indent !count; print_string "IF("; print_cond cond; print_endline ")"; print_blocks true b1; indent !count; print_endline "ELSE"; print_blocks true b2;
+      | While (cond,b) -> indent !count; print_string "WHILE("; print_cond cond; print_endline ")"; print_blocks true b
+      | Until (cond,b) -> indent !count; print_string "UNTIL("; print_cond cond; print_endline ")"; print_blocks true b
       | Stm lst -> print_stms lst
-  and print_blocks b=
-    let aux=function
+  and print_blocks shall_indent b=
+    let rec aux=function
       | [] -> ()
-      | hd::tl -> print_block hd; print_blocks tl
-    in if b!=[] then begin indent !count; print_endline "{"; count:=!count+2 end; aux b; if b!=[] then begin count:=!count-2; indent !count; print_endline "}" end
+      | hd::tl -> print_block hd; aux tl
+    in if shall_indent then begin indent !count; print_endline "{"; count:=!count+2 end; aux b; if shall_indent then begin count:=!count-2; indent !count; print_endline "}" end
   in let print_seg=function
-      | Func (f,args,b) -> print_string (f^"("); print_args args; print_endline ")"; print_blocks b 
-      | Block b -> print_blocks b
+      | Func (f,args,b) -> print_string (f^"("); print_args args; print_endline ")"; print_blocks true b 
+      | Block b -> print_blocks false b
   in let rec aux_seg=function
       | [] -> ()
       | hd::tl -> print_seg hd; aux_seg tl

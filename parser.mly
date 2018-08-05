@@ -41,6 +41,7 @@
 %token DIVIDE
 %token COMMA
 %token AND
+%token OR
 %token EOF
 
 /* Precedence and associativity */
@@ -81,6 +82,8 @@ condition:
   | e1=expression GE e2=expression { Ge (e1,e2) }
   | e1=expression LT e2=expression { Lt (e1,e2) }
   | e1=expression LE e2=expression { Le (e1,e2) }
+  | c1=condition AND c2=condition { And (c1,c2) }
+  | c1=condition OR c2=condition { Or (c1,c2) }
 ;
 
 arguments:

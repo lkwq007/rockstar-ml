@@ -62,6 +62,7 @@ let eval prog=
         in let value=try eval_block env false true b;Null with ReturnFunc x -> x
         in let ()=remove_arg env arg
         in value end  
+
   and eval_cond env=function
     | Eq (e1,e2) -> is_equal (eval_exp env e1) (eval_exp env e2)
     | Ne (e1,e2) -> not (is_equal (eval_exp env e1) (eval_exp env e2))
@@ -69,6 +70,8 @@ let eval prog=
     | Lt (e1,e2) -> is_lt (eval_exp env e1) (eval_exp env e2)
     | Ge (e1,e2) -> is_ge (eval_exp env e1) (eval_exp env e2)
     | Le (e1,e2) -> is_le (eval_exp env e1) (eval_exp env e2)
+    | And (c1,c2) -> (eval_cond env c1) && (eval_cond env c2)
+    | Or (c1,c2) ->  (eval_cond env c1) || (eval_cond env c2)
 
   and eval_stm env in_block in_func=function
     | Scan var -> begin let data=read_line () in 
