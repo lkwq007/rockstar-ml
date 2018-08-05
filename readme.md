@@ -10,34 +10,34 @@ It takes me about 8 hours to finish this project with OCaml ( Thanks to my prior
 
 ## Spec - Implementation
 
-- [ ] File format - `ocamllex` not support UTF-8
-- [x] Comments
-- [x] Variables - Still some bugs, as the spec is ambiguous
-- [x] Common variables
-- [x] Proper variables
-- [x] Pronouns - don't know variable scope, so assume global scope, using the previous parsed variable
-- [x] Types - Not support `dec64`
-- [x] Mysterious
-- [x] Null
-- [x] Boolean
-- [ ] Number - not support `dec64`, use `float` instead
-- [x] String
-- [ ] Object - lack details in spec
-- [x] Literals and Assignment
-- [x] Single Quotes - use a preprocessor
-- [x] Increment and Decrement
-- [x] Arithmetic - only support `float`
-- [x] Poetic Literals
-- [x] Poetic Type Literals
-- [x] Poetic String Literals
-- [x] Poetic Number Literals
-- [x] Comparison - support `and` and `or` operators
-- [x] Input/Output
-- [x] Flow Control and Block Syntax
-- [x] Conditionals
-- [x] Loops
-- [x] Blocks - there are some bugs with blocks
-- [x] Functions - but nested function is not allowed
+- ❌File format - `ocamllex` not support UTF-8
+- ✔️Comments
+- 🐛Variables - Still some bugs, as the spec is ambiguous
+  - ✔️Common variables
+  - ✔️Proper variables
+  - ✔️Pronouns - don't know variable scope, so assume global scope, using the previous parsed variable
+- ✔️Types - Not support `dec64`
+  - ✔️Mysterious
+  - ✔️Null
+  - ✔️Boolean
+  - ❌Number - not support `dec64`, use `float` instead
+  - ✔️String
+  - ❌Object - lack details in spec
+- ✔️Literals and Assignment
+- ✔️Single Quotes - use a preprocessor
+- ✔️Increment and Decrement
+- ✔️Arithmetic - only support `float`
+- 🐛Poetic Literals - may exist bugs
+  - ✔️Poetic Type Literals
+  - ✔️Poetic String Literals
+  - ✔️Poetic Number Literals
+- ✔️Comparison - support `and` and `or` operators
+- ✔️Input/Output - about endline?
+- ✔️Flow Control and Block Syntax
+  - ✔️Conditionals
+  - ✔️Loops
+  - ✔️Blocks - brute implementation
+- ✔️Functions - but nested function is not allowed
 
 ## How to build
 
