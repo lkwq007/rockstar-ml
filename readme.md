@@ -13,30 +13,30 @@ It takes me about 8 hours to finish this project with OCaml ( Thanks to my prior
 - [ ] File format - `ocamllex` not support UTF-8
 - [x] Comments
 - [x] Variables - Still some bugs, as the spec is ambiguous
-      - [x] Common variables
-      - [x] Proper variables
-      - [x] Pronouns - don't know variable scope, so assume global scope, using the previous parsed variable
+- [x] Common variables
+- [x] Proper variables
+- [x] Pronouns - don't know variable scope, so assume global scope, using the previous parsed variable
 - [x] Types - Not support `dec64`
-      - [x] Mysterious
-      - [x] Null
-      - [x] Boolean
-      - [ ] Number - not support `dec64`, use `float` instead
-      - [x] String
-      - [ ] Object - lack details in spec
+- [x] Mysterious
+- [x] Null
+- [x] Boolean
+- [ ] Number - not support `dec64`, use `float` instead
+- [x] String
+- [ ] Object - lack details in spec
 - [x] Literals and Assignment
-      - [x] Single Quotes - use a preprocessor
-      - [x] Increment and Decrement
-      - [x] Arithmetic - only support `float`
-      - [x] Poetic Literals
-            - [x] Poetic Type Literals
-            - [x] Poetic String Literals
-            - [x] Poetic Number Literals
+- [x] Single Quotes - use a preprocessor
+- [x] Increment and Decrement
+- [x] Arithmetic - only support `float`
+- [x] Poetic Literals
+- [x] Poetic Type Literals
+- [x] Poetic String Literals
+- [x] Poetic Number Literals
 - [x] Comparison - support `and` and `or` operators
 - [x] Input/Output
 - [x] Flow Control and Block Syntax
-      - [x] Conditionals
-      - [x] Loops
-      - [x] Blocks - there are some bugs with blocks
+- [x] Conditionals
+- [x] Loops
+- [x] Blocks - there are some bugs with blocks
 - [x] Functions - but nested function is not allowed
 
 ## How to build
