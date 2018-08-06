@@ -58,7 +58,7 @@
 
 prog:
   | blankline s=seg blankline p=prog { s::p }
-  | blankline s=seg blanklines EOF { [s] }
+  | blankline s=seg blankline EOF { [s] }
 ;
 
 seg:
